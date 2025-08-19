@@ -1,9 +1,10 @@
+import { Category } from "@/payload-types";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 
 import Footer from "./footer";
 import { Navbar } from "./navbar";
-import SearchFilters from "./search-filters";
+import { SearchFilters } from "./search-filters";
 
 interface Props {
     children: React.ReactNode
@@ -16,7 +17,7 @@ const Layout = async ({ children }: Props) => {
 
     const data = await payload.find({
         collection: 'categories',
-        depth: 1,
+        depth: 1, // Populate subcategories
         pagination: false,
         where: {
             parent: {
@@ -28,16 +29,17 @@ const Layout = async ({ children }: Props) => {
     const formattedData = data.docs.map((doc) => ({
         ...doc,
         subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
-            ...doc
+            ...(doc as Category),
+            subcategories: undefined
         }))
     }));
 
-    console.log(data);
+    console.log(formattedData);
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
             <Navbar />
-            <SearchFilters data={data} />
+            <SearchFilters data={formattedData} />
             <div className="flex-1">
                 {children}
             </div>

@@ -18,5 +18,3 @@ export const SearchFilters = ({
         </div>
     )
 }
-
-export default SearchFilters;

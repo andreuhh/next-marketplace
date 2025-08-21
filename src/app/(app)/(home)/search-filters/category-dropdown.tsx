@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { CustomCategory } from "../types";
 import { SubcategoryMenu } from "./subcategory-menu";
@@ -32,12 +33,20 @@ export const CategoryDropdown = ({
 
     const dropdownPosition = getDropdownPosition();
 
+    // mobile improvement
+    // const toggleDropdown = () => {
+    //     if (category.subcategories?.docs?.length) {
+    //         setIsOpen(!isOpen);
+    //     }
+    // }
+
     return (
         <div
             className="relative"
             ref={dropdownRef}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+        //onClick={toggleDropdown}
         >
             <div className="relative">
                 <Button
@@ -48,7 +57,9 @@ export const CategoryDropdown = ({
                         isOpen && "bg-white border-primary hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[4px] hover:-translate-y-[4px]"
                     )}
                 >
-                    {category.name}
+                    <Link href={`/${category.slug === 'all' ? '' : category.slug}`}>
+                        {category.name}
+                    </Link>
                 </Button>
                 {category.subcategories && category.subcategories.length > 0 && (
                     <div className={cn("opacity-0 absolute -bottom-3 w-0 h-0 border-l-[10px] border-r-[10px] border-b-[10px] border-l-transparent border-r-transparent border-b-black left-1/2 -translate-x-1/2",

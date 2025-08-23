@@ -38,4 +38,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## START 
 bun run dev
 
-## 3.07
+## Generate Payload key
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"

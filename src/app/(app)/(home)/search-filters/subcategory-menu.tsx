@@ -1,4 +1,4 @@
-import { CategoriesGetManyOutput } from "@/modules/categories/tyoes";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { Category } from "@/payload-types";
 import Link from "next/link";
 

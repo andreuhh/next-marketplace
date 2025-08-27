@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CategoriesGetManyOutput } from "@/modules/categories/tyoes";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CategoriesSidebar } from "./categories-sidebar";

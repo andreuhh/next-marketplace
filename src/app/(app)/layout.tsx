@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import { TRPCReactProvider } from "../../trpc/client";
 import "./globals.css";
 
@@ -25,6 +26,7 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           {children}
+          <Toaster />
         </TRPCReactProvider>
       </body>
     </html>

@@ -1,1 +1,1 @@
-export const AUTH_COOKIE = "marketplace-payload-token"
+export const AUTH_COOKIE = "payload-token"

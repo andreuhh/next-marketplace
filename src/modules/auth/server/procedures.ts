@@ -1,8 +1,7 @@
-import { registerSchema } from "@/modules/schemas";
+import { loginSchema, registerSchema } from "@/modules/schemas";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { cookies as getCookies, headers as getHeaders } from "next/headers";
-import z from "zod";
 import { AUTH_COOKIE } from "../costants";
 
 export const authRouter = createTRPCRouter({
@@ -72,37 +71,33 @@ export const authRouter = createTRPCRouter({
                 //domain: ""
             });
         }),
-    login: baseProcedure.input(
-        z.object({
-            email: z.string().email(),
-            password: z.string(),
-        })
-    ).mutation(async ({ input, ctx }) => {
-        const data = await ctx.db.login({
-            collection: "users",
-            data: {
-                email: input.email,
-                password: input.password
+    login: baseProcedure.input(loginSchema)
+        .mutation(async ({ input, ctx }) => {
+            const data = await ctx.db.login({
+                collection: "users",
+                data: {
+                    email: input.email,
+                    password: input.password
+                }
+            });
+
+            if (!data.token) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED",
+                    message: "Failed to login"
+                })
             }
-        });
 
-        if (!data.token) {
-            throw new TRPCError({
-                code: "UNAUTHORIZED",
-                message: "Failed to login"
-            })
-        }
-
-        const cookies = await getCookies();
-        cookies.set({
-            name: AUTH_COOKIE,
-            value: data.token,
-            httpOnly: true,
-            path: "/",
-            // todo: Ensure cross-domain cookie sharing
-            //sameSite: "none",
-            //domain: ""
-        });
-        return data;
-    })
+            const cookies = await getCookies();
+            cookies.set({
+                name: AUTH_COOKIE,
+                value: data.token,
+                httpOnly: true,
+                path: "/",
+                // todo: Ensure cross-domain cookie sharing
+                //sameSite: "none",
+                //domain: ""
+            });
+            return data;
+        })
 });

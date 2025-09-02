@@ -1,18 +1,12 @@
 import { loginSchema, registerSchema } from "@/modules/schemas";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { cookies as getCookies, headers as getHeaders } from "next/headers";
-import { AUTH_COOKIE } from "../costants";
+import { headers as getHeaders } from "next/headers";
+import { generateAuthCookie } from "../utils";
 
 export const authRouter = createTRPCRouter({
     session: baseProcedure.query(async ({ ctx }) => {
         const headers = await getHeaders()
-        const session = await ctx.db.auth({ headers });
-        return session;
-    }),
-    logout: baseProcedure.mutation(async ({ ctx }) => {
-        const headers = await getHeaders();
-
         const session = await ctx.db.auth({ headers });
         return session;
     }),
@@ -60,16 +54,10 @@ export const authRouter = createTRPCRouter({
                 })
             }
 
-            const cookies = await getCookies();
-            cookies.set({
-                name: AUTH_COOKIE,
+            await generateAuthCookie({
+                prefix: ctx.db.config.cookiePrefix,
                 value: data.token,
-                httpOnly: true,
-                path: "/",
-                // todo: Ensure cross-domain cookie sharing
-                //sameSite: "none",
-                //domain: ""
-            });
+            })
         }),
     login: baseProcedure.input(loginSchema)
         .mutation(async ({ input, ctx }) => {
@@ -88,16 +76,10 @@ export const authRouter = createTRPCRouter({
                 })
             }
 
-            const cookies = await getCookies();
-            cookies.set({
-                name: AUTH_COOKIE,
+            await generateAuthCookie({
+                prefix: ctx.db.config.cookiePrefix,
                 value: data.token,
-                httpOnly: true,
-                path: "/",
-                // todo: Ensure cross-domain cookie sharing
-                //sameSite: "none",
-                //domain: ""
-            });
+            })
             return data;
         })
 });

@@ -1,35 +1,35 @@
+import { loadProductFilters } from "@/modules/products/server/load-prodict-filters";
 import { ProductFilters } from "@/modules/products/ui/components/product-filters";
 import { ProductList, ProductListSkeleton } from "@/modules/products/ui/components/product-list";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 
 interface Props {
-    params: Promise<{
-        category: string;
-    }>,
-    searchParams: Promise<{
-        minPrice: string | undefined,
-        maxPrice: string | undefined,
-    }>
+    params: Promise<{ category: string }>;
+    searchParams: Promise<SearchParams>;
 }
 
 const CategoryPage = async ({ params, searchParams }: Props) => {
     const { category } = await params;
-    const { minPrice, maxPrice } = await searchParams;
+    const filters = await loadProductFilters(searchParams); // ✅ Works now — server-safe
 
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(trpc.products.getMany.queryOptions({
-        category,
-        maxPrice,
-        minPrice
-    }));
+
+    // Prefetch product data with filters
+    void queryClient.prefetchQuery(
+        trpc.products.getMany.queryOptions({
+            category,
+            ...filters,
+        })
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="px-4 lg:px-12 py-8 flex flex-col gap-4">
-                <div className="grid grid-cols-1 lg:grid-col-6 xl:grid-cols-8 gap-y-6 gap-x-12">
-                    <div className="lg_col-span-2 xl:col-span-2">
+                <div className="grid grid-cols-1 lg:grid-cols-6 xl:grid-cols-8 gap-y-6 gap-x-12">
+                    <div className="lg:col-span-2 xl:col-span-2">
                         <div className="border p-2">
                             <ProductFilters />
                         </div>
@@ -42,8 +42,7 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
                 </div>
             </div>
         </HydrationBoundary>
-    )
-}
+    );
+};
 
 export default CategoryPage;
-

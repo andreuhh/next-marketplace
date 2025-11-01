@@ -8,9 +8,9 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
-import { Tags } from './collections/Collections'
 import { Media } from './collections/Media'
 import { Products } from './collections/Products'
+import { Tags } from './collections/Tags'
 import { Users } from './collections/Users'
 
 const filename = fileURLToPath(import.meta.url)

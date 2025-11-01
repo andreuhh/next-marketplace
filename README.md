@@ -41,4 +41,4 @@ bun run dev
 ## Generate Payload key
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-# 8.52
+# 9.07

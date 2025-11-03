@@ -15,7 +15,7 @@ interface Props {
 
 const CategoryPage = async ({ params, searchParams }: Props) => {
     const { category } = await params;
-    const filters = await loadProductFilters(searchParams); // ✅ Works now — server-safe
+    const filters = await loadProductFilters(searchParams);
 
     const queryClient = getQueryClient();
 

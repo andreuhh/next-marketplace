@@ -41,4 +41,7 @@ bun run dev
 ## Generate Payload key
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-# 9.42
+# Generate Payload
+bunx payload generate:importmap
+
+# 10.27

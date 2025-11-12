@@ -38,42 +38,40 @@ export const ProductList = ({ category, }: Props) => {
     }
 
     return (
-        <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-                {
-                    data?.pages.flatMap((page) => page.docs).map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            imageUrl={product.image?.url}
-                            authorUsername="Test Author"
-                            authorImageUrl={undefined}
-                            reviewRating={3}
-                            reviewCount={5}
-                            price={product.price}
-                        />
-                    ))}
-                <div className="flex justify-center pt-8">
-                    {hasNextPage && (
-                        <Button
-                            disabled={isFetchingNextPage}
-                            onClick={() => fetchNextPage()}
-                            className="font-medium disabled:opacity-50 text-base bg-white"
-                            variant="elevated"
-                        >
-                            Load more
-                        </Button>
-                    )}
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+            {
+                data?.pages.flatMap((page) => page.docs).map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        id={product.id}
+                        name={product.name}
+                        imageUrl={product.image?.url}
+                        authorUsername="Test Author"
+                        authorImageUrl={undefined}
+                        reviewRating={3}
+                        reviewCount={5}
+                        price={product.price}
+                    />
+                ))}
+            <div className="flex justify-center pt-8">
+                {hasNextPage && (
+                    <Button
+                        disabled={isFetchingNextPage}
+                        onClick={() => fetchNextPage()}
+                        className="font-medium disabled:opacity-50 text-base bg-white"
+                        variant="elevated"
+                    >
+                        Load more
+                    </Button>
+                )}
             </div>
-        </>
+        </div>
     );
 }
 
 export const ProductListSkeleton = () => {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:cols-2 lg:grid-cols-2 xl-grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl-grid-cols-3">
             {Array.from({ length: DEFAULT_LIMIT }).map((_, index) => (
                 <ProductCardSkeleton key={index} />
             ))}

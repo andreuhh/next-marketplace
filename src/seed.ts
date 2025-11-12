@@ -137,37 +137,100 @@ const categories = [
     },
 ]
 
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 const seed = async () => {
     const payload = await getPayload({ config });
 
+    // Create admin user
+    await payload.create({
+        collection: "users",
+        data: {
+            email: "admin@demo.com",
+            password: "demo",
+            roles: ["super-admin"],
+            username: "admin",
+        },
+    });
+
     for (const category of categories) {
-        const parentCategory = await payload.create({
+        const parent = await payload.create({
             collection: "categories",
             data: {
                 name: category.name,
                 slug: category.slug,
                 color: category.color,
-                parent: null
+                parent: null,
             },
         });
 
-        for (const subCategory of category.subcategories || []) {
+        await delay(50);
+
+        for (const sub of category.subcategories || []) {
             await payload.create({
                 collection: "categories",
                 data: {
-                    name: subCategory.name,
-                    slug: subCategory.slug,
-                    parent: parentCategory.id
+                    name: sub.name,
+                    slug: sub.slug,
+                    parent: parent.id,
                 },
             });
+            await delay(25);
         }
     }
-}
+};
 
 try {
     await seed();
-    console.log("Seeding succesfully!!");
+    console.log("✅ Seeding successfully completed!");
     process.exit(0);
-} catch (error) {
-    console.error(error);
+} catch (err) {
+    console.error("❌ Seeding failed:", err);
+    process.exit(1);
 }
+
+// const seed = async () => {
+//     const payload = await getPayload({ config });
+
+//     // Create admin user
+//     await payload.create({
+//         collection: "users",
+//         data: {
+//             email: "admin@demo.com",
+//             password: "demo",
+//             roles: ["super-admin"],
+//             username: "admin",
+//         }
+//     })
+
+//     for (const category of categories) {
+//         const parentCategory = await payload.create({
+//             collection: "categories",
+//             data: {
+//                 name: category.name,
+//                 slug: category.slug,
+//                 color: category.color,
+//                 parent: null
+//             },
+//         });
+
+//         for (const subCategory of category.subcategories || []) {
+//             await payload.create({
+//                 collection: "categories",
+//                 data: {
+//                     name: subCategory.name,
+//                     slug: subCategory.slug,
+//                     parent: parentCategory.id
+//                 },
+//             });
+//         }
+//     }
+// }
+
+// try {
+//     await seed();
+//     console.log("Seeding succesfully!!");
+//     process.exit(0);
+// } catch (error) {
+//     console.error(error);
+// }

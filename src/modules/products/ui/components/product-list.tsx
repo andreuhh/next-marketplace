@@ -10,15 +10,17 @@ import { useProductFilters } from "../../hooks/use-product-filters";
 
 interface Props {
     category?: string;
+    tenantSlug?: string;
 }
 
-export const ProductList = ({ category, }: Props) => {
+export const ProductList = ({ category, tenantSlug }: Props) => {
     const [filters] = useProductFilters();
 
     const trpc = useTRPC();
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(trpc.products.getMany.infiniteQueryOptions({
         category,
         ...filters,
+        tenantSlug,
         limit: DEFAULT_LIMIT
     },
         {
